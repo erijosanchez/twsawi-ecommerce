@@ -90,7 +90,7 @@ class User extends Authenticatable
 
     public function visits()
     {
-        return $this->hasMany(siteVisit::class);
+        return $this->hasMany(SiteVisit::class);
     }
 
     public function productViews()
