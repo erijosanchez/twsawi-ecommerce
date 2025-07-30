@@ -88,7 +88,50 @@ class User extends Authenticatable
         return $this->hasMany(Notification::class, 'recipient_id');
     }
 
-    
+    public function visits()
+    {
+        return $this->hasMany(siteVisit::class);
+    }
 
+    public function productViews()
+    {
+        return $this->hasMany(ProductView::class);
+    }
+
+    public function searches()
+    {
+        return $this->hasMany(Search::class);
+    }
+
+    public function supportTickets()
+    {
+        return $this->hasMany(SupportTicket::class);
+    }
+
+    public function assignedTickets()
+    {
+        return $this->hasMany(SupportTicket::class, 'assigned_to');
+    }
+
+    //Scopes
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
+
+    public function scopeAdmins($query)
+    {
+        return $query->whereIn('role', ['admin', 'super_admin']);
+    }
+
+    public function scopeCustomers($query)
+    {
+        return $query->where('role', 'customer');
+    }
+
+    public function getIsAdminAttribute()
+    {
+        return in_array($this->role, ['admin', 'super_admin']);
+    }
     
 }
