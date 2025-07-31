@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import './admin/maps/horizontal-layout-dark/style.css.map';
+@import './admin/maps/horizontal-layout-light/style.css.map';
+@import './admin/maps/vertical-layout-dark/style.css.map';
+@import './admin/maps/vertical-layout-light/style.css.map';
+@import './admin/vertical-layout-light/style.css';
+
+
