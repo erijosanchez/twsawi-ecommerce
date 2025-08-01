@@ -13,6 +13,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     // Rutas de inicio de sesión
     Route::middleware('guest')->group(function () {
         Route::get('/auth/login/form', [AdminAuthController::class, 'showLoginForm'])->name('login');
+        Route::post('/auth/login', [AdminAuthController::class, 'login'])->name('login.submit');
     });
 });
 

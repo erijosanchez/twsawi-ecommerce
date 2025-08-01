@@ -28254,6 +28254,8 @@ div.tagsinput span.tag a {
 
 .auth .auth-form-light {
   background: #ffffff;
+  padding-bottom: 5rem;
+  padding-top: 5rem;
 }
 
 .auth .auth-form-light select {
@@ -28310,10 +28312,11 @@ div.tagsinput span.tag a {
 
 .auth .brand-logo {
   margin-bottom: 2rem;
+  align-items: center;
 }
 
 .auth .brand-logo img {
-  width: 90px;
+  width: 150px;
 }
 
 .auth form .form-group {
@@ -28333,7 +28336,8 @@ div.tagsinput span.tag a {
 }
 
 .auth form .auth-form-btn {
-  padding: 1rem 3rem;
+  width: 100%;
+  padding: 1rem 0rem;
   line-height: 1.5;
 }
 
