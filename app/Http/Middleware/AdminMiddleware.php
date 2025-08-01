@@ -22,23 +22,26 @@ class AdminMiddleware
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'No autenticado'], 401);
             }
-            return redirect()->route('admin.login');
+            return redirect()->route('admin.login')->with('error', 'Debes iniciar sesión para acceder.');
         }
 
         $user = Auth::user();
 
-        // Verificar si el usuario puede acceder al admin
+        // Verificar si el usuario puede acceder al panel de admin
         if (!$user->canAccessAdmin()) {
             Auth::logout();
-            
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            $message = !$user->isAdmin() 
+                ? 'No tienes permisos para acceder al panel de administración.' 
+                : 'Tu cuenta está desactivada. Contacta al administrador.';
+
             if ($request->expectsJson()) {
-                return response()->json([
-                    'message' => 'No tienes permisos para acceder al panel de administración'
-                ], 403);
+                return response()->json(['message' => $message], 403);
             }
-            
-            return redirect()->route('admin.login')
-                ->withErrors(['email' => 'No tienes permisos para acceder al panel de administración.']);
+
+            return redirect()->route('admin.login')->with('error', $message);
         }
 
         return $next($request);

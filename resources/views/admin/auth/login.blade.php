@@ -1,72 +1,82 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@extends('admin.layouts.authlayout')
 
-<head>
-    <!-- Required meta tags -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{{ config('app.name', 'Admin Tsawi') }}</title>
-    <!-- plugins:css -->
-    <link rel="stylesheet" href="{{ asset('assets/vendors/feather/feather.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendors/mdi/css/materialdesignicons.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendors/ti-icons/css/themify-icons.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendors/typicons/typicons.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendors/simple-line-icons/css/simple-line-icons.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendors/css/vendor.bundle.base.css') }}">
-    <!-- endinject -->
-    <link rel="stylesheet" href="{{ asset('assets/css/vertical-layout-light/style.css') }}">
-    <!-- endinject -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.png')}}" />
-</head>
+@section('title', 'Login - Admin Panel')
 
-<body>
-    <div class="container-scroller">
-        <div class="container-fluid page-body-wrapper full-page-wrapper">
-            <div class="d-flex align-items-center px-0 content-wrapper auth">
-                <div class="mx-0 w-100 row">
-                    <div class="mx-auto col-lg-4">
-                        <div class="px-4 px-sm-5 text-left auth-form-light">
-                            <div class="text-center brand-logo">
-                                <img src="{{ asset('assets/images/logo.svg') }}" alt="logo">
-                            </div>
-                            <h4>Bienvenido</h4>
-                            <h6 class="fw-light">Sistema de administración</h6>
-                            <form class="pt-3">
-                                <div class="form-group">
-                                    <input type="email" class="form-control form-control-lg" id="exampleInputEmail1"
-                                        placeholder="Username">
-                                </div>
-                                <div class="form-group">
-                                    <input type="password" class="form-control form-control-lg"
-                                        id="exampleInputPassword1" placeholder="Password">
-                                </div>
-                                <div class="form-group mt-3 text-center">
-                                    <a class="btn-block font-weight-medium btn btn-primary btn-lg auth-form-btn"
-                                        href="../../index.html">SIGN IN</a>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+@section('content')
+    <div class="px-4 px-sm-5 text-left auth-form-light">
+        <div class="text-center brand-logo">
+            <img src="{{ asset('assets/images/logo.svg') }}" alt="logo">
         </div>
-        <!-- page-body-wrapper ends -->
-    </div>
-    <!-- container-scroller -->
-    <!-- plugins:js -->
-    <script src="{{ asset('assets/vendors/js/vendor.bundle.base.js') }}"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page -->
-    <script src="{{ asset('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
-    <!-- End plugin js for this page -->
-    <!-- inject:js -->
-    <script src="{{ asset('assets/js/off-canvas.js') }}"></script>
-    <script src="{{ asset('assets/js/hoverable-collapse.js') }}"></script>
-    <script src="{{ asset('assets/js/template.js') }}"></script>
-    <script src="{{ asset('assets/js/settings.js') }}"></script>
-    <script src="{{ asset('assets/js/todolist.js') }}"></script>
-    <!-- endinject -->
-</body>
+        <h4>Bienvenido</h4>
+        <h6 class="fw-light">Sistema de administración</h6>
 
-</html>
+        {{-- Mostrar mensajes de éxito --}}
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        {{-- Mostrar mensajes de error --}}
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        <form class="pt-3" action="{{ route('admin.login.submit') }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <input type="email" class="form-control form-control-lg @error('email') is-invalid @enderror"
+                    id="email" name="email" required value="{{ old('email') }}" placeholder="Email Address">
+                @error('email')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+            <div class="form-group">
+                <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror"
+                    id="password" name="password" require placeholder="Password">
+                @error('password')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+            <div class="form-group mt-3 text-center">
+                <button type="submit" class="btn-block font-weight-medium btn btn-primary btn-lg auth-form-btn" id="loginBtn">
+                    SIGN IN
+                </button>
+
+            </div>
+        </form>
+
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+            const btnText = loginBtn.querySelector('.btn-text');
+            const spinner = loginBtn.querySelector('.spinner-border');
+
+            form.addEventListener('submit', function() {
+                // Deshabilitar el botón para evitar doble envío
+                loginBtn.disabled = true;
+                btnText.textContent = 'INICIANDO...';
+                spinner.classList.remove('d-none');
+            });
+
+            // Auto-hide alerts after 5 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 5000);
+            });
+        });
+    </script>
+@endsection

@@ -131,7 +131,7 @@ class User extends Authenticatable
     /**
      * Verificar permisos específicos basados en el rol
      */
-    public function can($permission)
+    public function hasPermission($permission)
     {
         $permissions = $this->getPermissionsByRole();
         return in_array($permission, $permissions);
