@@ -10,7 +10,7 @@
                 <img src="{{ asset('assets/images/logo.svg') }}" alt="logo" />
             </a>
             <a class="navbar-brand brand-logo-mini" href="index.html">
-                <img src="images/logo-mini.svg" alt="logo" />
+                <img src="{{ asset('assets/images/logo-mini.svg') }}" alt="logo" />
             </a>
         </div>
     </div>
@@ -128,7 +128,8 @@
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item preview-item">
                         <div class="preview-thumbnail">
-                            <img src="images/faces/face10.jpg" alt="image" class="img-sm profile-pic">
+                            <img src="{{ asset('assets/images/faces/face10.jpg') }}" alt="image"
+                                class="img-sm profile-pic">
                         </div>
                         <div class="flex-grow py-2 preview-item-content">
                             <p class="font-weight-medium text-dark preview-subject ellipsis">Marian Garner </p>
@@ -137,7 +138,8 @@
                     </a>
                     <a class="dropdown-item preview-item">
                         <div class="preview-thumbnail">
-                            <img src="images/faces/face12.jpg" alt="image" class="img-sm profile-pic">
+                            <img src="{{ asset('assets/images/faces/face12.jpg') }}" alt="image"
+                                class="img-sm profile-pic">
                         </div>
                         <div class="flex-grow py-2 preview-item-content">
                             <p class="font-weight-medium text-dark preview-subject ellipsis">David Grey </p>
@@ -159,10 +161,12 @@
             <li class="d-lg-block nav-item dropdown d-none user-dropdown">
                 <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown"
                     aria-expanded="false">
-                    <img class="rounded-circle img-xs" src="images/faces/face8.jpg" alt="Profile image"> </a>
+                    <img class="rounded-circle img-xs" src="{{ asset('assets/images/faces/face8.jpg') }}"
+                        alt="Profile image"> </a>
                 <div class="dropdown-menu-right dropdown-menu navbar-dropdown" aria-labelledby="UserDropdown">
                     <div class="text-center dropdown-header">
-                        <img class="rounded-circle img-md" src="images/faces/face8.jpg" alt="Profile image">
+                        <img class="rounded-circle img-md" src="{{ asset('assets/images/faces/face8.jpg') }}"
+                            alt="Profile image">
                         <p class="mt-3 mb-1 font-weight-semibold">Allen Moreno</p>
                         <p class="mb-0 text-muted fw-light">allenmoreno@gmail.com</p>
                     </div>
@@ -178,8 +182,13 @@
                     <a class="dropdown-item"><i
                             class="me-2 mdi-help-circle-outline text-primary dropdown-item-icon mdi"></i>
                         FAQ</a>
-                    <a class="dropdown-item"><i class="me-2 text-primary dropdown-item-icon mdi mdi-power"></i>Sign
-                        Out</a>
+                    <form method="POST" action="{{ route('admin.logout') }}" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="dropdown-item"
+                            style="border: none; background: none; width: 100%; text-align: left;">
+                            <i class="me-2 text-primary dropdown-item-icon mdi mdi-power"></i>Log out
+                        </button>
+                    </form>
                 </div>
             </li>
         </ul>

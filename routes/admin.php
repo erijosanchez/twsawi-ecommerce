@@ -18,6 +18,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 
     Route::middleware(['auth', 'admin'])->group(function () {
+        // Rutas de cierre de sesión
+        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
         //Dashboard
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     });
