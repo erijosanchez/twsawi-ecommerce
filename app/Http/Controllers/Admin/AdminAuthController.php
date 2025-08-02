@@ -27,7 +27,7 @@ class AdminAuthController extends Controller
     public function showLoginForm()
     {
         if (Auth::check() && Auth::user()->canAccessAdmin()) {
-            return redirect()->route('admin.dashboard.view');
+            return redirect()->route('admin.dashboard');
         }
         return view('admin.auth.login');
     }
@@ -112,7 +112,7 @@ class AdminAuthController extends Controller
                 'user_agent' => $request->userAgent(),
             ]);
 
-            return redirect()->intended(route('admin.dashboard.view'))
+            return redirect()->intended(route('admin.dashboard'))
                 ->with('success', 'Bienvenido al panel de administración, ' . $user->name);
         }
 

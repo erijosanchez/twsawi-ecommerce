@@ -10,6 +10,6 @@ class AdminDashboardController extends Controller
     public function index()
     {
         // Aquí puedes agregar la lógica para el dashboard del administrador
-        return view('admin.layouts.admin');
+        return view('admin.pages.dashboard.index'); // Asegúrate de tener una vista llamada 'admin.dashboard.index'
     }
 }
