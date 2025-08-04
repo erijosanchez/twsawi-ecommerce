@@ -6,10 +6,10 @@
             </button>
         </div>
         <div>
-            <a class="navbar-brand brand-logo" href="index.html">
+            <a class="navbar-brand brand-logo" href="{{ route('admin.dashboard') }}">
                 <img src="{{ asset('assets/images/logo.svg') }}" alt="logo" />
             </a>
-            <a class="navbar-brand brand-logo-mini" href="index.html">
+            <a class="navbar-brand brand-logo-mini" href="{{ route('admin.dashboard') }}">
                 <img src="{{ asset('assets/images/logo-mini.svg') }}" alt="logo" />
             </a>
         </div>
@@ -17,7 +17,7 @@
     <div class="d-flex align-items-top navbar-menu-wrapper">
         <ul class="navbar-nav">
             <li class="d-lg-block ms-0 font-weight-semibold nav-item d-none">
-                <h1 class="welcome-text">Good Morning, <span class="text-black fw-bold">John Doe</span></h1>
+                <h1 class="welcome-text">Buenos días, <span class="text-black fw-bold">{{ Auth::user()->name }}</span></h1>
                 <h3 class="welcome-sub-text">Your performance summary this week </h3>
             </li>
         </ul>
