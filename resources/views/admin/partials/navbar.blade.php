@@ -170,11 +170,11 @@
                         <p class="mt-3 mb-1 font-weight-semibold">Allen Moreno</p>
                         <p class="mb-0 text-muted fw-light">allenmoreno@gmail.com</p>
                     </div>
-                    <a class="dropdown-item"><i
+                    <a class="dropdown-item" href="{{ route('admin.profile') }}"><i
                             class="me-2 mdi-account-outline text-primary dropdown-item-icon mdi"></i> My
                         Profile <span class="badge badge-pill badge-danger">1</span></a>
-                    <a class="dropdown-item"><i
-                            class="me-2 mdi-message-text-outline text-primary dropdown-item-icon mdi"></i>
+                    <a class="dropdown-item">
+                        <i class="me-2 mdi-message-text-outline text-primary dropdown-item-icon mdi"></i>
                         Messages</a>
                     <a class="dropdown-item"><i
                             class="me-2 mdi-calendar-check-outline text-primary dropdown-item-icon mdi"></i>

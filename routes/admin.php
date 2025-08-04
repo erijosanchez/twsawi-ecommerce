@@ -20,6 +20,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['admin', 'prevent.back'])->group(function () {
         // Rutas de cierre de sesión
         Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+
+        //Ruta para la gestion del perfil del administrador
+        Route::get('/profile', [AdminUserController::class, 'profile'])->name('profile');
         //Dashboard
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     });
