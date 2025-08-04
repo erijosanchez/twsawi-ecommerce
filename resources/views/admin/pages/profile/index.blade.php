@@ -27,7 +27,9 @@
                                                                         <label class="col-sm-3 col-form-label">First
                                                                             Name</label>
                                                                         <div class="col-sm-9">
-                                                                            <input type="text" class="form-control" />
+                                                                            <input type="text" class="form-control"
+                                                                                value="{{ old('name', $user->name) }}"
+                                                                                required />
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -184,24 +186,34 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!-- actualiza el avatar o foto de perfil !-->
                                 <div class="flex-column col-lg-4">
                                     <div class="flex-grow row">
                                         <div class="grid-margin col-md-6 col-lg-12 stretch-card">
                                             <div class="bg-primary card-rounded card">
                                                 <div class="d-flex flex-column align-items-center pb-0 card-body">
-                                                    <img class="mb-4 user-profile-img"
-                                                        src="{{ asset('assets/images/faces/face8.jpg') }}" alt="">
-                                                    <form action="" method="POST" enctype="multipart/form-data">
+                                                    @if ($user->avatar)
+                                                        <img class="mb-4 user-profile-img"
+                                                            src="{{ asset('storage/' . $user->avatar) }}"
+                                                            alt="{{ $user->name }}'s Profile Image">
+                                                    @else
+                                                        <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=0D6EFD&color=fff&rounded=true&size=50"
+                                                            alt="Avatar" class="rounded-circle">
+                                                    @endif
+                                                    <div class="text-white">
+                                                        <h5 class="mb-4 text-blue-100">{{ $user->name }}</h5>
+                                                    </div>
+                                                    <form action="{{ route('admin.profile.avatar') }}" method="POST" enctype="multipart/form-data">
                                                         @csrf
                                                         <div class="form-group text-center row">
-                                                            <label for="profileImage" class="text-white">Change
-                                                                Profile Image</label>
                                                             <div class="col-sm-12">
-                                                                <input type="file" class="text-center form-control" id="avatar"
-                                                                    name="avatar" accept="image/*" style="height: 40px; cursor: pointer;" required>
+                                                                <input type="file" class="text-center form-control"
+                                                                    id="avatar" name="avatar" accept="image/*"
+                                                                    style="height: 40px; cursor: pointer;" required>
                                                             </div>
                                                         </div>
-                                                        <button type="submit" class="btn btn-secondary btn-profile-img"n>Update
+                                                        <button type="submit"
+                                                            class="btn btn-secondary btn-profile-img">Update
                                                             Profile</button>
                                                     </form>
                                                 </div>
