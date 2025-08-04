@@ -12,12 +12,12 @@ use App\Http\Controllers\Admin\{
 // =================================
 Route::prefix('admin')->name('admin.')->group(function () {
     // Rutas de inicio de sesión
-    Route::middleware('guest')->group(function () {
+    Route::middleware('prevent.back')->group(function () {
         Route::get('/auth/login/form', [AdminAuthController::class, 'showLoginForm'])->name('login');
         Route::post('/auth/login/form', [AdminAuthController::class, 'login'])->name('login.submit');
     });
 
-    Route::middleware(['auth', 'admin'])->group(function () {
+    Route::middleware(['admin', 'prevent.back'])->group(function () {
         // Rutas de cierre de sesión
         Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
         //Dashboard

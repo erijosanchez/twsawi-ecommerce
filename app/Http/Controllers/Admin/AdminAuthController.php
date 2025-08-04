@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\AdminActivityLog;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\RateLimiter;
 
 
@@ -26,6 +27,8 @@ class AdminAuthController extends Controller
      */
     public function showLoginForm()
     {
+        Session::forget('navigation_attempts');
+
         if (Auth::check() && Auth::user()->canAccessAdmin()) {
             return redirect()->route('admin.dashboard');
         }
@@ -149,6 +152,8 @@ class AdminAuthController extends Controller
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+        Session::forget('navigation_attempts');
+
 
         return redirect()->route('admin.login')
             ->with('success', 'Has cerrado sesión correctamente.');
