@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class AdminActivityLog extends Model
 {
     use HasFactory;
+    public $timestamps = false;
+
 
     protected $fillable = [
         'user_id',
@@ -19,6 +21,7 @@ class AdminActivityLog extends Model
         'new_values',
         'ip_address',
         'user_agent',
+        'created_at'
     ];
 
     protected $casts = [

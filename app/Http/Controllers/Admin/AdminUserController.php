@@ -38,8 +38,26 @@ class AdminUserController extends Controller
     public function updatePassword(Request $request)
     {
         $request->validate([
-            'current_password' => ['required'],
-            'password' => ['required', 'confirmed', Password::defaults()],
+            'current_password' => ['required', 'string'],
+            'new_password' => [
+                'required',
+                'string',
+                'confirmed', // Esto valida que new_password y new_password_confirmation coincidan
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+            ],
+        ], [
+            'current_password.required' => 'La contraseña actual es obligatoria.',
+            'new_password.required' => 'La nueva contraseña es obligatoria.',
+            'new_password.confirmed' => 'Las contraseñas nuevas no coinciden.',
+            'new_password.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
+            'new_password.letters' => 'La nueva contraseña debe contener al menos una letra.',
+            'new_password.mixed_case' => 'La nueva contraseña debe contener mayúsculas y minúsculas.',
+            'new_password.numbers' => 'La nueva contraseña debe contener al menos un número.',
+            'new_password.symbols' => 'La nueva contraseña debe contener al menos un símbolo.',
         ]);
 
         $user = Auth::user();
@@ -48,15 +66,23 @@ class AdminUserController extends Controller
         if (!Hash::check($request->current_password, $user->password)) {
             return back()->withErrors([
                 'current_password' => 'La contraseña actual es incorrecta.'
-            ]);
+            ])->withInput();
+        }
+
+        // Verificar que la nueva contraseña sea diferente a la actual
+        if (Hash::check($request->new_password, $user->password)) {
+            return back()->withErrors([
+                'new_password' => 'La nueva contraseña debe ser diferente a la actual.'
+            ])->withInput();
         }
 
         $user->update([
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($request->new_password)
         ]);
 
-        return redirect()->route('profile.show')
+        $request->session()->regenerate();
+
+        return redirect()->route('admin.profile')
             ->with('success', 'Contraseña cambiada correctamente.');
     }
-
 }

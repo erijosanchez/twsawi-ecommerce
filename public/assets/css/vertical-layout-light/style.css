@@ -30795,3 +30795,30 @@ div.tagsinput span.tag a {
   align-items: center;
   justify-content: center;
 }
+
+.btn-profile-dt {
+  right: 10px;
+  color: white !important;
+  border: none;
+  border-radius: 50%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.colum-pass {
+  display: flex;
+  justify-content: center;
+  height: 100%;
+}  
+
+.p {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+}
+
+.btn-pass {
+  height: 32px;
+}
