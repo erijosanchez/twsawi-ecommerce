@@ -26,6 +26,8 @@
 </head>
 
 <body>
+    <!--ALERTS-->
+    @include('admin.partials.alerts')
     <div class="container-scroller">
         <!-- partial Navbar -->
         @include('admin.partials.navbar')
@@ -42,8 +44,8 @@
                             role="tab" aria-controls="todo-section" aria-expanded="true">TO DO LIST</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="chats-tab" data-bs-toggle="tab" href="#chats-section"
-                            role="tab" aria-controls="chats-section">CHATS</a>
+                        <a class="nav-link" id="chats-tab" data-bs-toggle="tab" href="#chats-section" role="tab"
+                            aria-controls="chats-section">CHATS</a>
                     </li>
                 </ul>
                 <div class="tab-content" id="setting-content">
@@ -52,8 +54,7 @@
                         <div class="d-flex mb-0 px-3 add-items">
                             <form class="w-100 form">
                                 <div class="form-group d-flex">
-                                    <input type="text" class="todo-list-input form-control"
-                                        placeholder="Add To-do">
+                                    <input type="text" class="todo-list-input form-control" placeholder="Add To-do">
                                     <button type="submit" class="todo-list-add-btn add btn btn-primary"
                                         id="add-task">Add</button>
                                 </div>
@@ -234,8 +235,32 @@
     <!-- Custom js for this page-->
     <script src="{{ asset('assets/js/dashboard.js') }}"></script>
     <script src="{{ asset('assets/js/Chart.roundedBarCharts.js') }}"></script>
-    <!-- End custom js for this page-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const alerts = document.querySelectorAll('.custom-fade');
+
+            // Forzar animación de entrada
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.classList.add('show');
+                }, 100); // pequeño delay para que se note la entrada
+            });
+
+            // Auto-cierre después de 5 segundos con animación
+            setTimeout(() => {
+                alerts.forEach(alert => {
+                    alert.classList.remove('show');
+                    alert.classList.add('hide');
+
+                    setTimeout(() => {
+                        const bsAlert = new bootstrap.Alert(alert);
+                        bsAlert.close();
+                    }, 500); // coincide con la duración de la animación
+                });
+            }, 5000);
+        });
+    </script>
+
 </body>
 
 </html>
-b

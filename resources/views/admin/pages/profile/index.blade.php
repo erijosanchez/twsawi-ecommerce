@@ -16,25 +16,6 @@
                                             <div class="card-rounded card">
                                                 <div class="card-rounded card-body">
                                                     <div class="card-body">
-                                                        @if (session('success'))
-                                                            <div class="alert alert-success alert-dismissible fade show"
-                                                                role="alert">
-                                                                <i class="mdi-check-circle-outline mdi"></i>
-                                                                {{ session('success') }}
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="alert" aria-label="Close"></button>
-                                                            </div>
-                                                        @endif
-
-                                                        @if (session('error'))
-                                                            <div class="alert alert-danger alert-dismissible fade show"
-                                                                role="alert">
-                                                                <i class="mdi-alert-circle-outline mdi"></i>
-                                                                {{ session('error') }}
-                                                                <button type="button" class="btn-close"
-                                                                    data-bs-dismiss="alert" aria-label="Close"></button>
-                                                            </div>
-                                                        @endif
                                                         <h4 class="card-title">Mis Datos</h4>
                                                         <form class="form-sample">
                                                             <p class="card-description">
@@ -199,6 +180,7 @@
                                                                 </div>
                                                             </div>
                                                         </form>
+                                                        <!-- Formulario de actualización de contraseña -->
                                                         <form class="form-sample" id="changePasswordForm"
                                                             action="{{ route('admin.profile.password') }}" method="POST">
                                                             @csrf

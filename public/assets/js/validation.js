@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const newPassword = document.getElementById('new_password');
     const confirmPassword = document.getElementById('new_password_confirmation');
     const passwordError = document.getElementById('password_match_error');
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (/[^A-Za-z0-9]/.test(password)) strength += 20;
 
         strengthBar.style.width = strength + '%';
-        
+
         if (strength < 40) {
             strengthBar.className = 'progress-bar bg-danger';
             feedback = 'Muy débil';
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Event listeners
-    newPassword.addEventListener('input', function() {
+    newPassword.addEventListener('input', function () {
         checkPasswordStrength(this.value);
         validatePasswordMatch();
     });
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
     confirmPassword.addEventListener('input', validatePasswordMatch);
 
     // Prevenir envío si las contraseñas no coinciden
-    document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+    document.getElementById('changePasswordForm').addEventListener('submit', function (e) {
         if (!validatePasswordMatch()) {
             e.preventDefault();
             alert('Por favor, asegúrate de que las contraseñas coincidan.');
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function togglePassword(fieldId) {
     const field = document.getElementById(fieldId);
     const icon = document.getElementById(fieldId + '_icon');
-    
+
     if (field.type === 'password') {
         field.type = 'text';
         icon.className = 'mdi mdi-eye-off';
