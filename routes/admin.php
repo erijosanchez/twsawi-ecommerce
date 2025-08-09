@@ -27,7 +27,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Ruta para actualizar la contraseña del administrador
         Route::post('/profile/password', [AdminUserController::class, 'updatePassword'])->name('profile.password');
         // Ruta para actualizar los datos del perfil del administrador
-        Route::post('/profile/update', [AdminUserController::class, 'profileupdat1e'])->name('profile.update');
+        Route::post('/profile/update', [AdminUserController::class, 'updateProfileData'])->name('profile.update');
         //Dashboard
         Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     });

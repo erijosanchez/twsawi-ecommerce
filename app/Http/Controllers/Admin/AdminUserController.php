@@ -85,4 +85,37 @@ class AdminUserController extends Controller
         return redirect()->route('admin.profile')
             ->with('success', 'Contraseña cambiada correctamente.');
     }
+
+    public function updateProfileData(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            //'email' => 'required|email|unique:users,email,' . $user->id,
+            'phone' => 'nullable|string|max:15',
+            'birth_date' => 'nullable|date|before:today',
+        ], [
+            /** 'email.required' => 'El correo electrónico es obligatorio.',
+            *'email.email' => 'El correo electrónico no es válido.',
+            *'email.unique' => 'El correo electrónico ya está en uso.',*/
+            'birth_date.date' => 'La fecha de nacimiento no es válida.',
+            'birth_date.before' => 'La fecha de nacimiento debe ser una fecha pasada.',
+            'phone.max' => 'El número de teléfono no debe exceder los 15 caracteres.',
+            //'phone.regex' => 'El número de teléfono contiene caracteres no válidos.',
+        ]);
+
+        try {
+            $user->update([
+                //'email' => $request->email,
+                'phone' => $request->phone,
+                'birth_date' => $request->birth_date,
+                
+            ]);
+            return redirect()->route('admin.profile')->with('success', 'Datos del perfil actualizados correctamente.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Error al actualizar los datos del perfil: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
 }

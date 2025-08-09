@@ -17,168 +17,78 @@
                                                 <div class="card-rounded card-body">
                                                     <div class="card-body">
                                                         <h4 class="card-title">Mis Datos</h4>
-                                                        <form class="form-sample">
+                                                        <form class="form-sample"
+                                                            action="{{ route('admin.profile.update') }}" method="POST">
+                                                            @csrf
                                                             <p class="card-description">
                                                                 Personal info
                                                             </p>
                                                             <div class="row">
                                                                 <div class="col-md-6">
-                                                                    <div class="form-group row">
-                                                                        <label class="col-sm-3 col-form-label">First
-                                                                            Name</label>
-                                                                        <div class="col-sm-9">
+                                                                    <div class="form-group p row">
+                                                                        <label class="col-sm-4 col-form-label">Nombre
+                                                                            completo</label>
+                                                                        <div class="colum-pass col-sm-8">
                                                                             <input type="text" class="form-control"
                                                                                 value="{{ old('name', $user->name) }}"
-                                                                                required />
+                                                                                name="name" id="name" required />
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-6">
-                                                                    <div class="form-group row">
-                                                                        <label class="col-sm-3 col-form-label">Last
-                                                                            Name</label>
-                                                                        <div class="col-sm-9">
-                                                                            <input type="text" class="form-control" />
+                                                                    <div class="form-group p row">
+                                                                        <label class="col-sm-4 col-form-label">Número de
+                                                                            Celular</label>
+                                                                        <div class="col-sm-8 colum-pass">
+                                                                            <input
+                                                                                class="form-control  @error('phone') is-invalid @enderror"
+                                                                                type="tel" name="phone" id="phone"
+                                                                                value="{{ old('phone', $user->phone) }}" />
                                                                         </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group row">
-                                                                        <label
-                                                                            class="col-sm-3 col-form-label">Gender</label>
-                                                                        <div class="col-sm-9">
-                                                                            <select class="form-control">
-                                                                                <option>Male</option>
-                                                                                <option>Female</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group row">
-                                                                        <label class="col-sm-3 col-form-label">Date of
-                                                                            Birth</label>
-                                                                        <div class="col-sm-9">
-                                                                            <input class="form-control"
-                                                                                placeholder="dd/mm/yyyy" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group row">
-                                                                        <label
-                                                                            class="col-sm-3 col-form-label">Category</label>
-                                                                        <div class="col-sm-9">
-                                                                            <select class="form-control">
-                                                                                <option>Category1</option>
-                                                                                <option>Category2</option>
-                                                                                <option>Category3</option>
-                                                                                <option>Category4</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group row">
-                                                                        <label
-                                                                            class="col-sm-3 col-form-label">Membership</label>
-                                                                        <div class="col-sm-4">
-                                                                            <div class="form-check">
-                                                                                <label class="form-check-label">
-                                                                                    <input type="radio"
-                                                                                        class="form-check-input"
-                                                                                        name="membershipRadios"
-                                                                                        id="membershipRadios1"
-                                                                                        value="" checked>
-                                                                                    Free
-                                                                                </label>
+                                                                        @error('phone')
+                                                                            <div class="invalid-feedback">
+                                                                                {{ $message }}
                                                                             </div>
+                                                                        @enderror
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group p row">
+                                                                        <label class="col-sm-4 col-form-label">Fecha de
+                                                                            Nacimiento</label>
+                                                                        <div class="col-sm-8 colum-pass">
+                                                                            <input type="date" name="birth_date"
+                                                                                id="birth_date"
+                                                                                value="{{ $user->birth_date ? $user->birth_date->format('Y-m-d') : '' }}"
+                                                                                class="form-control @error('birth_date') is-invalid @enderror">
                                                                         </div>
-                                                                        <div class="col-sm-5">
-                                                                            <div class="form-check">
-                                                                                <label class="form-check-label">
-                                                                                    <input type="radio"
-                                                                                        class="form-check-input"
-                                                                                        name="membershipRadios"
-                                                                                        id="membershipRadios2"
-                                                                                        value="option2">
-                                                                                    Professional
-                                                                                </label>
+                                                                        @error('birth_date')
+                                                                            <div class="invalid-feedback">
+                                                                                <i class="fas fa-exclamation-circle"></i>
+                                                                                {{ $message }}
                                                                             </div>
+                                                                        @enderror
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group p row">
+                                                                        <label class="col-sm-4 col-form-label">Genero
+                                                                        </label>
+                                                                        <div class="col-sm-8 colum-pass">
+                                                                            <input type="text" class="form-control"
+                                                                                name="gender" id="gender"
+                                                                                value="{{ old('gender', $user->gender) }}"
+                                                                                readonly>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <p class="card-description">
-                                                                Address
-                                                            </p>
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group row">
-                                                                        <label class="col-sm-3 col-form-label">Address
-                                                                            1</label>
-                                                                        <div class="col-sm-9">
-                                                                            <input type="text" class="form-control" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group row">
-                                                                        <label class="col-sm-3 col-form-label">State</label>
-                                                                        <div class="col-sm-9">
-                                                                            <input type="text" class="form-control" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group row">
-                                                                        <label class="col-sm-3 col-form-label">Address
-                                                                            2</label>
-                                                                        <div class="col-sm-9">
-                                                                            <input type="text" class="form-control" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group row">
-                                                                        <label
-                                                                            class="col-sm-3 col-form-label">Postcode</label>
-                                                                        <div class="col-sm-9">
-                                                                            <input type="text" class="form-control" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group row">
-                                                                        <label class="col-sm-3 col-form-label">City</label>
-                                                                        <div class="col-sm-9">
-                                                                            <input type="text" class="form-control" />
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group row">
-                                                                        <label
-                                                                            class="col-sm-3 col-form-label">Country</label>
-                                                                        <div class="col-sm-9">
-                                                                            <select class="form-control">
-                                                                                <option>America</option>
-                                                                                <option>Italy</option>
-                                                                                <option>Russia</option>
-                                                                                <option>Britain</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                            <button type="submit" id="submit_btn"
+                                                                class="mb-5 btn btn-primary btn-profile-dt">
+                                                                Actualizar datos
+                                                            </button>
                                                         </form>
                                                         <!-- Formulario de actualización de contraseña -->
                                                         <form class="form-sample" id="changePasswordForm"
@@ -198,20 +108,13 @@
                                                                                 id="current_password"
                                                                                 placeholder="Ingresa tu contraseña actual"
                                                                                 name="current_password" required />
-                                                                            <button
-                                                                                class="btn-outline-primary btn btn-pass"
+                                                                            <button class="btn-outline-primary btn btn-pass"
                                                                                 type="button"
                                                                                 onclick="togglePassword('current_password')">
                                                                                 <i class="mdi mdi-eye"
                                                                                     id="current_password_icon"></i>
                                                                             </button>
                                                                         </div>
-                                                                        @error('current_password')
-                                                                            <div class="invalid-feedback">
-                                                                                <i class="fas fa-exclamation-circle"></i>
-                                                                                {{ $message }}
-                                                                            </div>
-                                                                        @enderror
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-6">
