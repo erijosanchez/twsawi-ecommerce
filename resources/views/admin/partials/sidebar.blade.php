@@ -6,7 +6,19 @@
                 <span class="menu-title">Dashboard</span>
             </a>
         </li>
-        <li class="nav-item nav-category">UI Elements</li>
+        <li class="nav-item">
+            <a class="nav-link" href="index.html">
+                <i class="mdi mdi-collage mdi menu-icon"></i>
+                <span class="menu-title">Categorías</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="index.html">
+                <i class="mdi-tag-multiple mdi menu-icon"></i>
+                <span class="menu-title">Colecciones</span>
+            </a>
+        </li>
+        <li class="nav-item nav-category">Colecciones</li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false"
                 aria-controls="ui-basic">
