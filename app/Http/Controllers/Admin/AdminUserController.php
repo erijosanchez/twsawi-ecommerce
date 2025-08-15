@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
@@ -118,4 +119,17 @@ class AdminUserController extends Controller
                 ->withInput();
         }
     }
+
+    // metodos para la administracion de usuarios
+    public function viewUsers()
+    {
+        $users = User::all();
+        return view('admin.pages.users.index', compact('users'));
+    }
+
+    public function edit($id)
+    {
+        $user = User::findOrFail($id);
+        return view('admin.pages.users.view', compact('user'));
+    } 
 }
