@@ -127,9 +127,23 @@ class AdminUserController extends Controller
         return view('admin.pages.users.index', compact('users'));
     }
 
-    public function edit($id)
+    public function editUser($id)
     {
         $user = User::findOrFail($id);
-        return view('admin.pages.users.view', compact('user'));
-    } 
+        return view('admin.pages.users.edit', compact('user'));
+    }
+    
+    public function destroyUser($id)
+    {
+        $user = User::findOrFail($id);
+        
+        // Eliminar la imagen de avatar si existe
+        if ($user->avatar && file_exists(public_path('storage/' . $user->avatar))) {
+            unlink(public_path('storage/' . $user->avatar));
+        }
+
+        $user->delete();
+
+        return redirect()->route('admin.users.view')->with('success', 'Usuario eliminado correctamente.');
+    }
 }

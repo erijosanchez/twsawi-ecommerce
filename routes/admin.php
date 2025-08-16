@@ -33,10 +33,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Rutas de gestión de usuarios
         Route::get('users', [AdminUserController::class, 'viewUsers'])->name('users.view');
-        Route::get('/users/{user}/edit', [AdminUserController::class, 'edit'])->name('users.edit');
-        Route::put('/users/{user}', [AdminUserController::class, 'update'])->name('users.update');
-        Route::delete('/users/{user}', [AdminUserController::class, 'destroy'])->name('users.destroy');
-        Route::get('/users/{user}/profile', [AdminUserController::class, 'profile'])->name('users.profile');
-        Route::post('/users/{user}/avatar', [AdminUserController::class, 'updateAvatar'])->name('users.avatar');
+        Route::get('/users/{user}/edit', [AdminUserController::class, 'editUser'])->name('users.edit');
+        Route::put('/users/{user}', [AdminUserController::class, 'updateUser'])->name('users.update');
+        Route::delete('/users/{user}', [AdminUserController::class, 'destroyUser'])->name('users.destroy');
     });
 });

@@ -8,7 +8,8 @@
                     <div class="card-body">
                         <h4 class="card-title">Lista de usuarios</h4>
                         <p class="card-description">
-                            Aquí puedes ver y administrar todos los usuarios registrados en el sistema.Puedes editar o eliminar a los usuarios que no sean administradores.
+                            Aquí puedes ver y administrar todos los usuarios registrados en el sistema.Puedes editar o
+                            eliminar a los usuarios que no sean administradores.
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
@@ -32,7 +33,7 @@
                                             Genero
                                         </th>
                                         <th>
-                                            Rol 
+                                            Rol
                                         </th>
                                         <th>
                                             Acciones
@@ -41,36 +42,42 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($users as $user)
-                                    <tr>
-                                        <td class="py-1">
-                                            <img src="{{ asset('storage/' . $user->avatar) }}" alt="image" />
-                                        </td>
-                                        <td>
-                                            {{ $user->name }}
-                                        </td>
-                                        <td>
-                                            {{ $user->email }}
-                                        </td>
-                                        <td>
-                                            {{ $user->phone }}
-                                        </td>
-                                        <td>
-                                            {{ $user->birth_date }}
-                                        </td>
-                                        <td>
-                                            {{ $user->gender }}
-                                        </td>
-                                        <td>
-                                            {{ $user->role }}
-                                        </td>
-                                        <td>
-                                            <a href="" class="btn btn btn-primary btn-sm">Editar</a>
-                                            <form action="" method="POST">
-                                                @csrf
-                                                @method('DELETE')
-                                            </form>
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td class="py-1">
+                                                <img src="{{ asset('storage/' . $user->avatar) }}" alt="image" />
+                                            </td>
+                                            <td>
+                                                {{ $user->name }}
+                                            </td>
+                                            <td>
+                                                {{ $user->email }}
+                                            </td>
+                                            <td>
+                                                {{ $user->phone }}
+                                            </td>
+                                            <td>
+                                                {{ $user->birth_date->format('Y-m-d') }}
+                                            </td>
+                                            <td>
+                                                {{ $user->gender }}
+                                            </td>
+                                            <td>
+                                                {{ $user->role }}
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('admin.users.edit', $user->id) }}"
+                                                    class="btn btn-primary btn-sm">Editar</a>
+                                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
+                                                    style="display: inline;">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-danger btn-sm"
+                                                        onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
+                                                        Eliminar
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
                                     @endforeach
                                 </tbody>
                             </table>
