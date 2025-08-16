@@ -162,12 +162,71 @@ class AdminUserController extends Controller
                 'gender' => $request->gender,
                 
             ]);
-            return redirect()->route('admin.profile')->with('success', 'Datos del perfil actualizados correctamente.');
+            return redirect()->route('admin.users.edit', $user->id)->with('success', 'Datos del perfil actualizados correctamente.');
         } catch (\Exception $e) {
             return redirect()->back()
                 ->with('error', 'Error al actualizar los datos del perfil: ' . $e->getMessage())
                 ->withInput();
         }
+    }
+
+    public function updateAvatarUser($id, Request $request)
+    {
+        $user = User::findOrFail($id);
+        $request->validate([
+            'avatar' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
+        ]);
+
+        // Eliminar la imagen anterior si existe
+        if ($user->avatar && file_exists(public_path('storage/' . $user->avatar))) {
+            unlink(public_path('storage/' . $user->avatar));
+        }
+
+        // Guardar la nueva imagen
+        $avatarPath = $request->file('avatar')->store('avatars', 'public');
+        $user->update(['avatar' => $avatarPath]);
+
+        return redirect()->route('admin.users.edit', $user->id)->with('success', 'Avatar actualizado correctamente.');
+    }
+
+    public function updatePasswordUser($id, Request $request)
+    {
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'new_password' => [
+                'required',
+                'string',
+                'confirmed', // Esto valida que new_password y new_password_confirmation coincidan
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+            ],
+        ], [
+            'new_password.required' => 'La nueva contraseña es obligatoria.',
+            'new_password.confirmed' => 'Las contraseñas nuevas no coinciden.',
+            'new_password.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
+            'new_password.letters' => 'La nueva contraseña debe contener al menos una letra.',
+            'new_password.mixed_case' => 'La nueva contraseña debe contener mayúsculas y minúsculas.',
+            'new_password.numbers' => 'La nueva contraseña debe contener al menos un número.',
+            'new_password.symbols' => 'La nueva contraseña debe contener al menos un símbolo.',
+        ]);
+
+        // Verificar que la nueva contraseña sea diferente a la actual
+        if (Hash::check($request->new_password, $user->password)) {
+            return back()->withErrors([
+                'new_password' => 'La nueva contraseña debe ser diferente a la actual.'
+            ])->withInput();
+        }
+
+        $user->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+
+        return redirect()->route('admin.users.edit', $user->id)
+            ->with('success', 'Contraseña cambiada correctamente.');
     }
     
     public function destroyUser($id)

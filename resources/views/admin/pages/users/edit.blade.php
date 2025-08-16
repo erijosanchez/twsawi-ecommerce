@@ -77,10 +77,24 @@
                                                                         <label class="col-sm-4 col-form-label">Genero
                                                                         </label>
                                                                         <div class="col-sm-8 colum-pass">
-                                                                            <input type="text" class="form-control"
-                                                                                name="gender" id="gender"
-                                                                                value="{{ old('gender', $user->gender) }}"
-                                                                                readonly>
+                                                                            <select name="gender" id="gender"
+                                                                                class="form-control">
+                                                                                <option value="">Seleccionar género
+                                                                                </option>
+                                                                                @php
+                                                                                    $genders = [
+                                                                                        'male' => 'Masculino',
+                                                                                        'female' => 'Femenino',
+                                                                                        'other' => 'Otro',
+                                                                                    ];
+                                                                                @endphp
+                                                                                @foreach ($genders as $value => $label)
+                                                                                    <option value="{{ $value }}"
+                                                                                        {{ old('gender', $user->gender) == $value ? 'selected' : '' }}>
+                                                                                        {{ $label }}
+                                                                                    </option>
+                                                                                @endforeach
+                                                                            </select>
                                                                         </div>
                                                                     </div>
                                                                 </div>

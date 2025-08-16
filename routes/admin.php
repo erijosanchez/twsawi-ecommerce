@@ -34,7 +34,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Rutas de gestión de usuarios
         Route::get('users', [AdminUserController::class, 'viewUsers'])->name('users.view');
         Route::get('/users/{user}/edit', [AdminUserController::class, 'editUser'])->name('users.edit');
-        Route::put('/users/{user}', [AdminUserController::class, 'updateUser'])->name('users.update');
+        Route::post('/users/{user}', [AdminUserController::class, 'updateUser'])->name('users.update');
+        // Ruta para actualizar la contraseña de los usuarios
+        Route::post('/users/password/{edit}', [AdminUserController::class, 'updatePasswordUser'])->name('users.password');
+        // Ruta para actualizar el avatar de los usuarios
+        Route::post('/users/avatar/{edit}', [AdminUserController::class, 'updateAvatarUser'])->name('users.avatar');
         Route::delete('/users/{user}', [AdminUserController::class, 'destroyUser'])->name('users.destroy');
     });
 });
