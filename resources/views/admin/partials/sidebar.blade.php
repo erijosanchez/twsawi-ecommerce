@@ -30,7 +30,7 @@
             <div class="collapse" id="ui-basic">
                 <ul class="flex-column nav sub-menu">
                     <li class="nav-item"> <a class="nav-link" href="{{ route('admin.users.view') }}">Lista de usuarios</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Crear usuarios</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('admin.users.create') }}">Crear usuarios</a></li>
                 </ul>
             </div>
         </li>

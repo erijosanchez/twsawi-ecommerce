@@ -239,7 +239,7 @@ class AdminUserController extends Controller
             $user->update([
                 'password' => Hash::make($request->new_password),
             ]);
-            
+
             // DB::table('sessions')->where('user_id', $user->id)->delete();
 
             // Opcional: Log de auditoría
@@ -270,5 +270,65 @@ class AdminUserController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users.view')->with('success', 'Usuario eliminado correctamente.');
+    }
+
+    /************************METODO PARA LA CREACIÓN DE USUARIOS ************************/
+    public function createUser()
+    {
+        return view('admin.pages.users.create');
+    }
+
+    public function storeUser(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => [
+                'required',
+                'string',
+                'confirmed', // Valida que password y password_confirmation coincidan
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+            ],
+            'phone' => 'nullable|string|max:15',
+            'birth_date' => 'nullable|date|before:today',
+        ], [
+            'name.required' => 'El nombre es obligatorio.',
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'El correo electrónico no es válido.',
+            'email.unique' => 'El correo electrónico ya está en uso.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.letters' => 'La contraseña debe contener al menos una letra.',
+            'password.mixed_case' => 'La contraseña debe contener mayúsculas y minúsculas.',
+            'password.numbers' => 'La contraseña debe contener al menos un número.',
+            'password.symbols' => 'La contraseña debe contener al menos un símbolo.',
+            'birth_date.date' => 'La fecha de nacimiento no es válida.',
+            'birth_date.before' => 'La fecha de nacimiento debe ser una fecha pasada.',
+            'phone.max' => 'El número de teléfono no debe exceder los 15 caracteres.',
+        ]);
+
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'phone' => $request->phone,
+                'birth_date' => $request->birth_date,
+            ]);
+
+            // Asignar rol por defecto, si es necesario
+            // $user->assignRole('default_role');
+
+            return redirect()->route('admin.users.view')->with('success', 'Usuario creado correctamente.');
+        } catch (\Exception $e) {
+            Log::error('Error creating user: ' . $e->getMessage());
+            return back()->withErrors(['error' => 'Ocurrió un error al crear el usuario. Inténtalo de nuevo.'])->withInput();
+        }
+
     }
 }

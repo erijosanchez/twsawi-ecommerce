@@ -40,5 +40,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Ruta para actualizar el avatar de los usuarios
         Route::post('/users/avatar/{edit}', [AdminUserController::class, 'updateAvatarUser'])->name('users.avatar');
         Route::delete('/users/{user}', [AdminUserController::class, 'destroyUser'])->name('users.destroy');
+        // Ruta para crear un nuevo usuario
+        Route::get('/users/create', [AdminUserController::class, 'createUser'])->name('users.create');
+        Route::post('/users/store', [AdminUserController::class, 'storeUser'])->name('users.store');
     });
 });
