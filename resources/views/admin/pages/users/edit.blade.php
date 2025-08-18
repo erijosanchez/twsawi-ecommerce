@@ -230,7 +230,7 @@
                                                     <div class="text-white">
                                                         <h5 class="mb-4 text-blue-100">{{ $user->name }}</h5>
                                                     </div>
-                                                    <form action="{{ route('admin.profile.avatar') }}" method="POST"
+                                                    <form action="{{ route('admin.users.avatar', $user->id) }}" method="POST"
                                                         enctype="multipart/form-data">
                                                         @csrf
                                                         <div class="form-group text-center row">

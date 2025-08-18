@@ -170,6 +170,8 @@ class AdminUserController extends Controller
         }
     }
 
+    /**Actualizar foto/avatar de usuario */
+
     public function updateAvatarUser($id, Request $request)
     {
         $user = User::findOrFail($id);
@@ -187,6 +189,7 @@ class AdminUserController extends Controller
         $user->update(['avatar' => $avatarPath]);
 
         return redirect()->route('admin.users.edit', $user->id)->with('success', 'Avatar actualizado correctamente.');
+
     }
 
     public function updatePasswordUser($id, Request $request)
