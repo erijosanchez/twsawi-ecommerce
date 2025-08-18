@@ -106,31 +106,12 @@
                                                         </form>
                                                         <!-- Formulario de actualización de contraseña -->
                                                         <form class="form-sample" id="changePasswordForm"
-                                                            action="{{ route('admin.profile.password') }}" method="POST">
+                                                            action="{{ route('admin.users.password', $user->id) }}" method="POST">
                                                             @csrf
                                                             <p class="card-description">
                                                                 Password update
                                                             </p>
                                                             <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group p row">
-                                                                        <label class="col-sm-4 col-form-label">Contraseña
-                                                                            Actual</label>
-                                                                        <div class="d-flex colum-pass col-sm-8">
-                                                                            <input type="password"
-                                                                                class="d-flex form-control @error('current_password') is-invalid @enderror"
-                                                                                id="current_password"
-                                                                                placeholder="Ingresa tu contraseña actual"
-                                                                                name="current_password" required />
-                                                                            <button class="btn-outline-primary btn btn-pass"
-                                                                                type="button"
-                                                                                onclick="togglePassword('current_password')">
-                                                                                <i class="mdi mdi-eye"
-                                                                                    id="current_password_icon"></i>
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
                                                                 <div class="col-md-6">
                                                                     <div class="form-group p row">
                                                                         <label class="col-sm-4 col-form-label">Nueva

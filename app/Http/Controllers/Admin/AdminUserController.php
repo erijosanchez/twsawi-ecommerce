@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
 
 class AdminUserController extends Controller
 {
@@ -98,8 +100,8 @@ class AdminUserController extends Controller
             'gender' => 'nullable|string|'
         ], [
             /** 'email.required' => 'El correo electrónico es obligatorio.',
-            *'email.email' => 'El correo electrónico no es válido.',
-            *'email.unique' => 'El correo electrónico ya está en uso.',*/
+             *'email.email' => 'El correo electrónico no es válido.',
+             *'email.unique' => 'El correo electrónico ya está en uso.',*/
             'birth_date.date' => 'La fecha de nacimiento no es válida.',
             'birth_date.before' => 'La fecha de nacimiento debe ser una fecha pasada.',
             'phone.max' => 'El número de teléfono no debe exceder los 15 caracteres.',
@@ -112,7 +114,7 @@ class AdminUserController extends Controller
                 'phone' => $request->phone,
                 'birth_date' => $request->birth_date,
                 'gender' => $request->gender,
-                
+
             ]);
             return redirect()->route('admin.profile')->with('success', 'Datos del perfil actualizados correctamente.');
         } catch (\Exception $e) {
@@ -138,7 +140,7 @@ class AdminUserController extends Controller
     public function updateUser($id, Request $request)
     {
         $user = User::findOrFail($id);
-        
+
         $request->validate([
             //'email' => 'required|email|unique:users,email,' . $user->id,
             'phone' => 'nullable|string|max:15',
@@ -146,8 +148,8 @@ class AdminUserController extends Controller
             'gender' => 'nullable|string|'
         ], [
             /** 'email.required' => 'El correo electrónico es obligatorio.',
-            *'email.email' => 'El correo electrónico no es válido.',
-            *'email.unique' => 'El correo electrónico ya está en uso.',*/
+             *'email.email' => 'El correo electrónico no es válido.',
+             *'email.unique' => 'El correo electrónico ya está en uso.',*/
             'birth_date.date' => 'La fecha de nacimiento no es válida.',
             'birth_date.before' => 'La fecha de nacimiento debe ser una fecha pasada.',
             'phone.max' => 'El número de teléfono no debe exceder los 15 caracteres.',
@@ -160,7 +162,7 @@ class AdminUserController extends Controller
                 'phone' => $request->phone,
                 'birth_date' => $request->birth_date,
                 'gender' => $request->gender,
-                
+
             ]);
             return redirect()->route('admin.users.edit', $user->id)->with('success', 'Datos del perfil actualizados correctamente.');
         } catch (\Exception $e) {
@@ -189,53 +191,77 @@ class AdminUserController extends Controller
         $user->update(['avatar' => $avatarPath]);
 
         return redirect()->route('admin.users.edit', $user->id)->with('success', 'Avatar actualizado correctamente.');
-
     }
 
     public function updatePasswordUser($id, Request $request)
     {
-        $user = User::findOrFail($id);
+        try {
+            // Buscar el usuario y manejar el caso donde no existe
+            $user = User::findOrFail($id);
 
-        $request->validate([
-            'new_password' => [
-                'required',
-                'string',
-                'confirmed', // Esto valida que new_password y new_password_confirmation coincidan
-                Password::min(8)
-                    ->letters()
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols()
-            ],
-        ], [
-            'new_password.required' => 'La nueva contraseña es obligatoria.',
-            'new_password.confirmed' => 'Las contraseñas nuevas no coinciden.',
-            'new_password.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
-            'new_password.letters' => 'La nueva contraseña debe contener al menos una letra.',
-            'new_password.mixed_case' => 'La nueva contraseña debe contener mayúsculas y minúsculas.',
-            'new_password.numbers' => 'La nueva contraseña debe contener al menos un número.',
-            'new_password.symbols' => 'La nueva contraseña debe contener al menos un símbolo.',
-        ]);
+            // Validación de la nueva contraseña
+            $request->validate([
+                'new_password' => [
+                    'required',
+                    'string',
+                    'confirmed', // Valida que new_password y new_password_confirmation coincidan
+                    Password::min(8)
+                        ->letters()
+                        ->mixedCase()
+                        ->numbers()
+                        ->symbols()
+                ],
+            ], [
+                'new_password.required' => 'La nueva contraseña es obligatoria.',
+                'new_password.confirmed' => 'Las contraseñas nuevas no coinciden.',
+                'new_password.min' => 'La nueva contraseña debe tener al menos 8 caracteres.',
+                'new_password.letters' => 'La nueva contraseña debe contener al menos una letra.',
+                'new_password.mixed_case' => 'La nueva contraseña debe contener mayúsculas y minúsculas.',
+                'new_password.numbers' => 'La nueva contraseña debe contener al menos un número.',
+                'new_password.symbols' => 'La nueva contraseña debe contener al menos un símbolo.',
+            ]);
 
-        // Verificar que la nueva contraseña sea diferente a la actual
-        if (Hash::check($request->new_password, $user->password)) {
+            // Verificar que la nueva contraseña sea diferente a la actual
+            if (Hash::check($request->new_password, $user->password)) {
+                return back()->withErrors([
+                    'new_password' => 'La nueva contraseña debe ser diferente a la actual.'
+                ])->withInput();
+            }
+
+            // Opcional: Verificar permisos de administrador
+            if (!auth()->user()->hasRole('super_admin') && auth()->id() !== $user->id) {
+                return back()->withErrors([
+                    'authorization' => 'No tienes permisos para cambiar esta contraseña.'
+                ]);
+            }
+
+            // Actualizar la contraseña
+            $user->update([
+                'password' => Hash::make($request->new_password),
+            ]);
+            
+            // DB::table('sessions')->where('user_id', $user->id)->delete();
+
+            // Opcional: Log de auditoría
+            Log::info("Admin {auth()->user()->name} changed password for user {$user->name} (ID: {$user->id})");
+
+            return redirect()->route('admin.users.edit', $user->id)
+                ->with('success', 'Contraseña cambiada correctamente.');
+        } catch (ModelNotFoundException $e) {
+            return redirect()->route('admin.users.index')
+                ->withErrors(['user' => 'Usuario no encontrado.']);
+        } catch (\Exception $e) {
+            Log::error('Error updating user password: ' . $e->getMessage());
             return back()->withErrors([
-                'new_password' => 'La nueva contraseña debe ser diferente a la actual.'
-            ])->withInput();
+                'error' => 'Ocurrió un error al cambiar la contraseña. Inténtalo de nuevo.'
+            ]);
         }
-
-        $user->update([
-            'password' => Hash::make($request->new_password)
-        ]);
-
-        return redirect()->route('admin.users.edit', $user->id)
-            ->with('success', 'Contraseña cambiada correctamente.');
     }
-    
+
     public function destroyUser($id)
     {
         $user = User::findOrFail($id);
-        
+
         // Eliminar la imagen de avatar si existe
         if ($user->avatar && file_exists(public_path('storage/' . $user->avatar))) {
             unlink(public_path('storage/' . $user->avatar));
