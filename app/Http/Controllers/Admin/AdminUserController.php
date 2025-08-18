@@ -295,6 +295,9 @@ class AdminUserController extends Controller
             ],
             'phone' => 'nullable|string|max:15',
             'birth_date' => 'nullable|date|before:today',
+            'gender' => 'nullable|string|',
+            'role' => 'required|string|in:super_admin,admin', // Validación del rol
+
         ], [
             'name.required' => 'El nombre es obligatorio.',
             'email.required' => 'El correo electrónico es obligatorio.',
@@ -319,11 +322,16 @@ class AdminUserController extends Controller
                 'password' => Hash::make($request->password),
                 'phone' => $request->phone,
                 'birth_date' => $request->birth_date,
-            ]);
-
-            // Asignar rol por defecto, si es necesario
-            // $user->assignRole('default_role');
-
+                'gender' => $request->gender,
+                'role' => $request->role, // Asignar el rol al usuario
+            ])->assignRole($request->role); // Asignar el rol usando Spatie
+            
+            // Opcional: Log de auditoría
+            Log::info("Admin {auth()->user()->name} created a new user: {$user->name} (ID: {$user->id})");
+            // Redirigir a la vista de usuarios con un mensaje de éxito
+            Log::info("Usuario creado correctamente: {$user->name} (ID: {$user->id})");
+            session()->flash('success', 'Usuario creado correctamente.');
+            // Redirigir a la vista de usuarios
             return redirect()->route('admin.users.view')->with('success', 'Usuario creado correctamente.');
         } catch (\Exception $e) {
             Log::error('Error creating user: ' . $e->getMessage());
