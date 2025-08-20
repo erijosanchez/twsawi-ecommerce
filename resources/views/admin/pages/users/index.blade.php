@@ -44,7 +44,7 @@
                                     @foreach ($users as $user)
                                         <tr>
                                             <td class="py-1">
-                                                <img src="{{ asset('storage/' . $user->avatar) }}" alt="image" />
+                                                <img src="{{ $user->avatar_url }}" alt="image" />
                                             </td>
                                             <td>
                                                 {{ $user->name }}

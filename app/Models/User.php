@@ -219,7 +219,7 @@ class User extends Authenticatable
     public function getAvatarUrlAttribute()
     {
         if ($this->avatar) {
-            return asset('storage/avatars/' . $this->avatar);
+            return asset('storage/' . $this->avatar);
         }
 
         // Generar un avatar por defecto si no se ha subido uno

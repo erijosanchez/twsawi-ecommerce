@@ -219,14 +219,9 @@
                                         <div class="grid-margin col-md-6 col-lg-12 stretch-card">
                                             <div class="bg-primary card-rounded card">
                                                 <div class="d-flex flex-column align-items-center pb-0 card-body">
-                                                    @if ($user->avatar)
-                                                        <img class="mb-4 user-profile-img"
-                                                            src="{{ asset('storage/' . $user->avatar) }}"
-                                                            alt="{{ $user->name }}'s Profile Image">
-                                                    @else
-                                                        <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=0D6EFD&color=fff&rounded=true&size=50"
-                                                            alt="Avatar" class="rounded-circle">
-                                                    @endif
+                                                    <img class="mb-4 user-profile-img" src="{{ $user->avatar_url }}"
+                                                        alt="{{ $user->name }}'s Profile Image">
+
                                                     <div class="text-white">
                                                         <h5 class="mb-4 text-blue-100">{{ $user->name }}</h5>
                                                     </div>

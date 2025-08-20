@@ -161,11 +161,11 @@
             <li class="d-lg-block nav-item dropdown d-none user-dropdown">
                 <a class="nav-link" id="UserDropdown" href="#" data-bs-toggle="dropdown"
                     aria-expanded="false">
-                    <img class="rounded-circle img-xs" src="{{ asset('storage/' . Auth::user()->avatar) }}"
+                    <img class="rounded-circle img-xs" src="{{ $user->avatar_url }}"
                         alt="Profile image"> </a>
                 <div class="dropdown-menu-right dropdown-menu navbar-dropdown" aria-labelledby="UserDropdown">
                     <div class="text-center dropdown-header">
-                        <img class="rounded-circle img-md" style="height: 50px; cursor: pointer;" src="{{ asset('storage/' . Auth::user()->avatar) }}"
+                        <img class="rounded-circle img-md" style="height: 50px; cursor: pointer;" src="{{ $user->avatar_url }}"
                             alt="Profile image">
                         <p class="mt-3 mb-1 font-weight-semibold">{{ Auth::user()->name }}</p>
                         <p class="mb-0 text-muted fw-light">{{ Auth::user()->email }}</p>
