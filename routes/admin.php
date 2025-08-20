@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\{
     AdminUserController,
     AdminAuthController,
     AdminDashboardController,
+    CategoriesController,
 };
 
 // =================================
@@ -43,5 +44,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Ruta para crear un nuevo usuario
         Route::get('/users/create', [AdminUserController::class, 'createUser'])->name('users.create');
         Route::post('/users/store/create', [AdminUserController::class, 'storeUser'])->name('users.store');
+
+        //Ruta para la gestion de roles y permisos
+        
+
+        // Ruta para la gestion de Categorias
+        Route::resource('categories', CategoriesController::class);
+        
+
+
+        
     });
 });

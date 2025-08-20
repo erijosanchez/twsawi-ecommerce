@@ -8,10 +8,18 @@
         </li>
         <li class="nav-item nav-category">Agrupar</li>
         <li class="nav-item">
-            <a class="nav-link" href="">
-                <i class="mdi mdi-collage mdi menu-icon"></i>
-                <span class="menu-title">Categorías</span>
+            <a class="nav-link" data-bs-toggle="collapse" href="#agrupar" aria-expanded="false"
+                aria-controls="agrupar">
+                <i class="menu-icon mdi mdi-floor-plan"></i>
+                <span class="menu-title">Categorias</span>
+                <i class="menu-arrow"></i>
             </a>
+            <div class="collapse" id="agrupar">
+                <ul class="flex-column nav sub-menu">
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('admin.categories.index') }}">Lista de categorias</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('admin.users.create') }}">Crear categoria</a></li>
+                </ul>
+            </div>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="index.html">
