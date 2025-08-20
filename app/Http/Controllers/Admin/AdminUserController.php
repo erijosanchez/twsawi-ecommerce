@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use App\Models\AdminActivityLog; // Asegúrate de tener este modelo si lo usas
+use Exception;
+
 
 class AdminUserController extends Controller
 {
@@ -280,63 +284,149 @@ class AdminUserController extends Controller
 
     public function storeUser(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+        // Validar los datos del formulario
+        $validatedData = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                'min:2',
+            ],
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                'unique:users,email'
+            ],
+            'phone' => [
+                'nullable',
+                'string',
+                'max:20',
+            ],
+            'birth_date' => [
+                'nullable',
+                'date',
+                'before:today',
+                'after:1900-01-01'
+            ],
+            'gender' => [
+                'nullable',
+                'in:male,female,other'
+            ],
             'password' => [
                 'required',
                 'string',
-                'confirmed', // Valida que password y password_confirmation coincidan
-                Password::min(8)
-                    ->letters()
-                    ->mixedCase()
-                    ->numbers()
-                    ->symbols()
+                'min:8',
+                'confirmed',
+                'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/'
             ],
-            'phone' => 'nullable|string|max:15',
-            'birth_date' => 'nullable|date|before:today',
-            'gender' => 'nullable|string|',
-            'role' => 'required|string|in:super_admin,admin', // Validación del rol
-
+            'role' => [
+                'required',
+                'in:admin,super_admin,customer'
+            ]
         ], [
+            // Mensajes personalizados de validación
             'name.required' => 'El nombre es obligatorio.',
+            'name.min' => 'El nombre debe tener al menos 2 caracteres.',
+            'name.regex' => 'El nombre solo puede contener letras y espacios.',
             'email.required' => 'El correo electrónico es obligatorio.',
-            'email.email' => 'El correo electrónico no es válido.',
-            'email.unique' => 'El correo electrónico ya está en uso.',
+            'email.email' => 'Debe ser un correo electrónico válido.',
+            'email.unique' => 'Este correo electrónico ya está registrado.',
+            'birth_date.before' => 'La fecha de nacimiento debe ser anterior a hoy.',
+            'birth_date.after' => 'La fecha de nacimiento no puede ser anterior a 1900.',
             'password.required' => 'La contraseña es obligatoria.',
-            'password.confirmed' => 'Las contraseñas no coinciden.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
-            'password.letters' => 'La contraseña debe contener al menos una letra.',
-            'password.mixed_case' => 'La contraseña debe contener mayúsculas y minúsculas.',
-            'password.numbers' => 'La contraseña debe contener al menos un número.',
-            'password.symbols' => 'La contraseña debe contener al menos un símbolo.',
-            'birth_date.date' => 'La fecha de nacimiento no es válida.',
-            'birth_date.before' => 'La fecha de nacimiento debe ser una fecha pasada.',
-            'phone.max' => 'El número de teléfono no debe exceder los 15 caracteres.',
+            'password.confirmed' => 'Las contraseñas no coinciden.',
+            'password.regex' => 'La contraseña debe contener al menos: una mayúscula, una minúscula, un número y un símbolo.',
+            'role.required' => 'Debe seleccionar un rol.',
+            'role.in' => 'El rol seleccionado no es válido.',
         ]);
 
-        try {
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'phone' => $request->phone,
-                'birth_date' => $request->birth_date,
-                'gender' => $request->gender,
-                'role' => $request->role, // Asignar el rol al usuario
-            ])->assignRole($request->role); // Asignar el rol usando Spatie
-            
-            // Opcional: Log de auditoría
-            Log::info("Admin {auth()->user()->name} created a new user: {$user->name} (ID: {$user->id})");
-            // Redirigir a la vista de usuarios con un mensaje de éxito
-            Log::info("Usuario creado correctamente: {$user->name} (ID: {$user->id})");
-            session()->flash('success', 'Usuario creado correctamente.');
-            // Redirigir a la vista de usuarios
-            return redirect()->route('admin.users.view')->with('success', 'Usuario creado correctamente.');
-        } catch (\Exception $e) {
-            Log::error('Error creating user: ' . $e->getMessage());
-            return back()->withErrors(['error' => 'Ocurrió un error al crear el usuario. Inténtalo de nuevo.'])->withInput();
+        // Verificar que solo super_admin pueda crear otros super_admin
+        if ($validatedData['role'] === 'super_admin' && !auth()->user()->isSuperAdmin()) {
+            return back()->withErrors([
+                'role' => 'Solo un Super Administrador puede crear otros Super Administradores.'
+            ])->withInput();
         }
 
+        try {
+            DB::beginTransaction();
+
+            // Preparar los datos para crear el usuario
+            $userData = [
+                'name' => trim($validatedData['name']),
+                'email' => strtolower(trim($validatedData['email'])),
+                'password' => Hash::make($validatedData['password']),
+                'role' => $validatedData['role'],
+                'is_active' => true,
+            ];
+
+            // Agregar campos opcionales si están presentes
+            if (!empty($validatedData['phone'])) {
+                $userData['phone'] = $validatedData['phone'];
+            }
+
+            if (!empty($validatedData['birth_date'])) {
+                $userData['birth_date'] = $validatedData['birth_date'];
+            }
+
+            if (!empty($validatedData['gender'])) {
+                $userData['gender'] = $validatedData['gender'];
+            }
+
+            // Crear el usuario
+            $user = User::create($userData);
+
+            // Registrar actividad del administrador (opcional)
+            $this->logAdminActivity(
+                auth()->user()->id,
+                'user_created',
+                "Usuario creado: {$user->name} ({$user->email}) con rol {$user->role_label}"
+            );
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.users.view')
+                ->with('success', "Usuario '{$user->name}' creado exitosamente.");
+        } catch (Exception $e) {
+            DB::rollBack();
+
+            // Log del error para debugging
+            \Log::error('Error al crear usuario: ' . $e->getMessage(), [
+                'user_data' => $validatedData,
+                'admin_id' => auth()->id()
+            ]);
+
+            return back()
+                ->withErrors(['error' => 'Ocurrió un error al crear el usuario. Por favor, intenta nuevamente.'])
+                ->withInput();
+        }
+    }
+
+    /**
+     * Registrar actividad del administrador (método auxiliar)
+     */
+    private function logAdminActivity($adminId, $action, $description)
+    {
+        try {
+            // Si tienes un modelo AdminActivityLog, puedes usar esto:
+
+            AdminActivityLog::create([
+                'user_id' => $adminId,
+                'action' => $action,
+                'description' => $description,
+                'ip_address' => request()->ip(),
+                'user_agent' => request()->userAgent(),
+            ]);
+            
+
+            // O simplemente log en archivo
+            \Log::info("Admin Activity - User ID: {$adminId}, Action: {$action}, Description: {$description}");
+        } catch (Exception $e) {
+            // Silenciosamente fallar si el log no es crítico
+            \Log::error('Error logging admin activity: ' . $e->getMessage());
+        }
     }
 }

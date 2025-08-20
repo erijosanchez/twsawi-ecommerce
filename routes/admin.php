@@ -42,6 +42,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/users/{user}', [AdminUserController::class, 'destroyUser'])->name('users.destroy');
         // Ruta para crear un nuevo usuario
         Route::get('/users/create', [AdminUserController::class, 'createUser'])->name('users.create');
-        Route::post('/users/store', [AdminUserController::class, 'storeUser'])->name('users.store');
+        Route::post('/users/store/create', [AdminUserController::class, 'storeUser'])->name('users.store');
     });
 });

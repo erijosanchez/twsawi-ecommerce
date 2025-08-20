@@ -35083,6 +35083,13 @@ div.tagsinput span.tag a {
   height: 32px;
 }
 
+.btn-pass2 {
+  height: 32px;
+  align-items: center !;
+  justify-content: center;
+  justify-items: center
+}
+
 .custom-fade {
   opacity: 0;
   transform: translateY(-20px);
@@ -35097,4 +35104,6 @@ div.tagsinput span.tag a {
 .custom-fade.hide {
   opacity: 0;
   transform: translateY(-20px);
-}
+} transform: translateY(-20px);
+} transform: translateY(-20px);
+} transform: translateY(-20px);
