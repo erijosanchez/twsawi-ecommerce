@@ -46,7 +46,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/users/store/create', [AdminUserController::class, 'storeUser'])->name('users.store');
 
         //Ruta para la gestion de roles y permisos
-        
+        Route::get('/manage/role', [AdminUserController::class, 'manageRole'])->name('manage.role');
+        Route::post('/manage/role/store', [AdminUserController::class, 'storeRole'])->name('manage.role.store');
+        Route::get('/manage/permission', [AdminUserController::class, 'managePermission'])->name('manage.permission');
+        Route::post('/manage/permission/store', [AdminUserController::class, 'storePermission'])->name('manage.permission.store');
 
         // Ruta para la gestion de Categorias
         Route::resource('categories', CategoriesController::class);

@@ -6,7 +6,7 @@
                 <span class="menu-title">Dashboard</span>
             </a>
         </li>
-        <li class="nav-item nav-category">Agrupar</li>
+        <li class="nav-item nav-category">Productos</li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#agrupar" aria-expanded="false"
                 aria-controls="agrupar">
@@ -17,7 +17,7 @@
             <div class="collapse" id="agrupar">
                 <ul class="flex-column nav sub-menu">
                     <li class="nav-item"> <a class="nav-link" href="{{ route('admin.categories.index') }}">Lista de categorias</a></li>
-                    <li class="nav-item"> <a class="nav-link" href="{{ route('admin.users.create') }}">Crear categoria</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('admin.categories.create') }}">Crear categoria</a></li>
                 </ul>
             </div>
         </li>
@@ -39,6 +39,8 @@
                 <ul class="flex-column nav sub-menu">
                     <li class="nav-item"> <a class="nav-link" href="{{ route('admin.users.view') }}">Lista de usuarios</a></li>
                     <li class="nav-item"> <a class="nav-link" href="{{ route('admin.users.create') }}">Crear usuarios</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('admin.manage.role') }}">Roles</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('admin.manage.permission') }}">Permisos</a></li>
                 </ul>
             </div>
         </li>
