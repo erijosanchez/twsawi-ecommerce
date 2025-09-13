@@ -72,7 +72,12 @@
                                                                         <label class="col-sm-4 col-form-label">Meta
                                                                             Descripción</label>
                                                                         <div class="colum-pass col-sm-8">
-                                                                            
+                                                                            <textarea class="form-control @error('meta_description') is-invalid @enderror" id="meta_description"
+                                                                                name="meta_description" rows="2">{{ old('meta_description') }}</textarea>
+                                                                            @error('meta_description')
+                                                                                <div class="invalid-feedback">
+                                                                                    {{ $message }}</div>
+                                                                            @enderror
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -83,9 +88,22 @@
                                                                         <label
                                                                             class="col-sm-4 col-form-label">Imagen</label>
                                                                         <div class="colum-pass col-sm-8">
-                                                                            <input type="text" class="form-control"
-                                                                                value="" name="name" id="name"
-                                                                                required />
+                                                                            <div class="custom-file">
+                                                                                <input type="file"
+                                                                                    class="form-control @error('image') is-invalid @enderror"
+                                                                                    id="image" name="image"
+                                                                                    style="cursor: pointer;"
+                                                                                    accept="image/*">
+                                                                            </div>
+                                                                            @error('image')
+                                                                                <div class="invalid-feedback">
+                                                                                    {{ $message }}</div>
+                                                                            @enderror
+                                                                            <div id="imagePreview" class="mt-2"
+                                                                                style="display: none;">
+                                                                                <img id="preview" class="img-thumbnail"
+                                                                                    style="max-width: 200px;">
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -94,8 +112,28 @@
                                                                         <label class="col-sm-4 col-form-label">Categoría
                                                                             Padre</label>
                                                                         <div class="colum-pass col-sm-8">
-                                                                            <textarea class="form-control" name="" id="" cols="30" rows="10"
-                                                                                placeholder="Escribe la descripción..."></textarea>
+                                                                            <select
+                                                                                class="form-control @error('parent_id') is-invalid @enderror"
+                                                                                id="parent_id" name="parent_id">
+                                                                                <option value="">Sin categoría padre
+                                                                                </option>
+                                                                                @foreach ($parentCategories as $parent)
+                                                                                    <option value="{{ $parent->id }}"
+                                                                                        {{ old('parent_id') == $parent->id ? 'selected' : '' }}>
+                                                                                        {{ $parent->name }}
+                                                                                    </option>
+                                                                                    @foreach ($parent->children as $child)
+                                                                                        <option value="{{ $child->id }}"
+                                                                                            {{ old('parent_id') == $child->id ? 'selected' : '' }}>
+                                                                                            — {{ $child->name }}
+                                                                                        </option>
+                                                                                    @endforeach
+                                                                                @endforeach
+                                                                            </select>
+                                                                            @error('parent_id')
+                                                                                <div class="invalid-feedback">
+                                                                                    {{ $message }}</div>
+                                                                            @enderror
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -105,9 +143,15 @@
                                                                     <div class="form-group p row">
                                                                         <label class="col-sm-4 col-form-label">Orden</label>
                                                                         <div class="colum-pass col-sm-8">
-                                                                            <input type="text" class="form-control"
-                                                                                value="" name="name" id="name"
-                                                                                required />
+                                                                            <input type="number"
+                                                                                class="form-control @error('sort_order') is-invalid @enderror"
+                                                                                id="sort_order" name="sort_order"
+                                                                                value="{{ old('sort_order', 0) }}"
+                                                                                min="0">
+                                                                            @error('sort_order')
+                                                                                <div class="invalid-feedback">
+                                                                                    {{ $message }}</div>
+                                                                            @enderror
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -116,16 +160,37 @@
                                                                         <label
                                                                             class="col-sm-4 col-form-label">Estado</label>
                                                                         <div class="colum-pass col-sm-8">
-                                                                            <textarea class="form-control" name="" id="" cols="30" rows="10"
-                                                                                placeholder="Escribe la descripción..."></textarea>
+                                                                            <div class="form-check-inline form-check">
+                                                                                <input class="form-check-input"
+                                                                                    type="radio" name="is_active"
+                                                                                    id="activo" value="1"
+                                                                                    {{ old('is_active', 1) == 1 ? 'checked' : '' }}>
+                                                                                <label
+                                                                                    class="text-lbl-form form-check-label"
+                                                                                    for="activo">Activo</label>
+                                                                            </div>
+                                                                            <div class="form-check-inline form-check fc">
+                                                                                <input class="form-check-input"
+                                                                                    type="radio" name="is_active"
+                                                                                    id="no_activo" value="0"
+                                                                                    {{ old('is_active', 1) == 0 ? 'checked' : '' }}>
+                                                                                <label
+                                                                                    class="text-lbl-form form-check-label"
+                                                                                    for="no_activo">No activo</label>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <button type="submit" id="submit_btn"
-                                                                class="mb-5 btn btn-primary btn-profile-dt">
-                                                                Actualizar datos
-                                                            </button>
+                                                            <div class="card-footer">
+                                                                <button type="submit" class="mb-5 btn btn-primary btn-profile-dt">
+                                                                    <i class="fas fa-save"></i> Guardar Categoría
+                                                                </button>
+                                                                <a href="{{ route('admin.categories.index') }}"
+                                                                    class="btn btn-secondary">
+                                                                    Cancelar
+                                                                </a>
+                                                            </div>
                                                         </form>
                                                     </div>
                                                 </div>
