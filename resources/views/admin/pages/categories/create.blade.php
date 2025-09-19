@@ -15,7 +15,7 @@
                                                 <div class="card-rounded card-body">
                                                     <div class="card-body">
                                                         <h4 class="card-title">Crear Nueva Categoría</h4>
-                                                        <form class="form-sample" action="" method="POST">
+                                                        <form class="form-sample" action="{{ route('admin.categories.store') }}" method="POST">
                                                             @csrf
                                                             <p class="card-description">
                                                                 Informacion de la categoría
@@ -183,13 +183,9 @@
                                                                 </div>
                                                             </div>
                                                             <div class="card-footer">
-                                                                <button type="submit" class="mb-5 btn btn-primary btn-profile-dt">
+                                                                <button type="submit" class="mb-1 btn btn-primary btn-profile-dt">
                                                                     <i class="fas fa-save"></i> Guardar Categoría
                                                                 </button>
-                                                                <a href="{{ route('admin.categories.index') }}"
-                                                                    class="btn btn-secondary">
-                                                                    Cancelar
-                                                                </a>
                                                             </div>
                                                         </form>
                                                     </div>
@@ -206,3 +202,44 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+// Auto-generar slug desde el nombre
+document.getElementById('name').addEventListener('input', function() {
+    const name = this.value;
+    const slug = name
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '') // Remover caracteres especiales
+        .replace(/\s+/g, '-') // Espacios a guiones
+        .replace(/-+/g, '-'); // Múltiples guiones a uno
+    
+    document.getElementById('slug').value = slug;
+});
+
+// Preview de imagen
+document.getElementById('image').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const preview = document.getElementById('imagePreview');
+    const img = document.getElementById('preview');
+    
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            img.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    } else {
+        preview.style.display = 'none';
+    }
+});
+
+// Actualizar label del input file
+document.querySelector('.custom-file-input').addEventListener('change', function (e) {
+    const fileName = e.target.files[0]?.name || 'Seleccionar imagen...';
+    const label = e.target.nextElementSibling;
+    label.textContent = fileName;
+});
+</script>
+@endpush

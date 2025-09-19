@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use App\Http\Requests\StoreCategoryRequest;
 
 class CategoriesController extends Controller
 {
@@ -31,17 +33,29 @@ class CategoriesController extends Controller
         return view('admin.pages.categories.create', compact('user', 'parentCategories'));
     }
 
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:categories,slug',
-            'parent_id' => 'nullable|exists:categories,id',
-            'sort_order' => 'nullable|integer|min:0',
-        ]);
+        $data = $request->validated();
+        
+        // Generar slug automáticamente si no se proporciona
+        if (empty($data['slug'])) {
+            $data['slug'] = Str::slug($data['name']);
+        }
 
-        Category::create($request->all());
+        // Manejar subida de imagen
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('categories', 'public');
+        }
 
-        return redirect()->route('admin.categories.index')->with('success', 'Categoría creada exitosamente.');
+        // Determinar sort_order
+        if (!isset($data['sort_order'])) {
+            $data['sort_order'] = Category::max('sort_order') + 1;
+        }
+
+        $category = Category::create($data);
+
+        return redirect()
+            ->route('admin.categories.index')
+            ->with('success', 'Categoría creada exitosamente.');
     }
 }
